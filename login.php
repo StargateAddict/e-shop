@@ -1,5 +1,5 @@
 <?php 
-    require_once('files/header.php')
+  require_once('files/header.php');
 ?>
 
     <div class="container py-4 py-lg-5 my-4">

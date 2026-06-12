@@ -1,4 +1,8 @@
-<?php require_once('files/header.php') ?>
+<?php 
+  require_once('files/functions.php');
+  protected_area();  
+  require_once('files/header.php');
+?>
 
 <div class="page-title-overlap bg-dark pt-4">
         <div class="container d-lg-flex justify-content-between py-2 py-lg-3">
@@ -46,7 +50,7 @@
                   <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="account-profile.html"><i class="ci-user opacity-60 me-2"></i>Profile info</a></li>
                   <li class="border-bottom mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="account-address.html"><i class="ci-location opacity-60 me-2"></i>Addresses</a></li>
                   <li class="mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="account-payment.html"><i class="ci-card opacity-60 me-2"></i>Payment methods</a></li>
-                  <li class="d-lg-none border-top mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="account-signin.html"><i class="ci-sign-out opacity-60 me-2"></i>Sign out</a></li>
+                  <li class=" border-top mb-0"><a class="nav-link-style d-flex align-items-center px-4 py-3" href="/logout.php"><i class="ci-sign-out opacity-60 me-2"></i>Sign out</a></li>
                 </ul>
               </div>
             </div>

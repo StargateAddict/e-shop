@@ -11,6 +11,23 @@ function url($path = "/"){
     return BASE_URL.$path;
 }
 
+function protected_area(){
+    if(!isset($_SESSION['user'])){
+        alert('warning','Unauthorized access, login before you proceed.');
+        header('Location: login.php');
+        die();
+    }
+}
+
+function logout(){
+    if(isset($_SESSION['user'])){
+        unset($_SESSION['user']);
+    }
+    alert('success', 'Logout successfully.');
+    header('Location: login.php');
+    die();
+}
+
 function is_logged_in(){
     if(isset($_SESSION['user'])){
         return true;
