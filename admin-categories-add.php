@@ -1,21 +1,48 @@
 <?php 
   require_once('files/functions.php');
-  
+  protected_area();
 
-  protected_area();  
+  $rows = db_select('categories', ' parent_id = 0 ');
+  $categories = [];
+
+  $categories[0] = 'No parent';
+  foreach ($rows as $val) {
+      $categories[$val['id']] = $val['name'];
+  }
+  
 
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $_SESSION['form']['value'] =$_POST;
+
+    $imgs=upload_images($_FILES);
+    $imgs=[];
+    $data['name'] = $_POST['name'];
+    $data['photo'] = json_encode($imgs);
+    $data['parent_id'] = 0;
+
+    
+    if (db_insert('categories', $data)) {
+      alert('success', 'Category created successfully.');
+      unset($_SESSION['form']);
+      header('Location: admin-categories.php');
+    } else {
+      alert('danger', 'Failed to create category, please try again.');
+      unset($_SESSION['form']);
+      header('Location: admin-categories-add.php');
+    }
+    
     echo"<pre>";
-  print_r($_FILES);
-  die();
+    print_r($imgs);
+    die();
+
+    die();
   }
 
 
   require_once('files/header.php');
 ?>
 
-<div class="page-title-overlap bg-dark pt-4">
+      <div class="page-title-overlap bg-dark pt-4">
         <div class="container d-lg-flex justify-content-between py-2 py-lg-3">
           <div class="order-lg-2 mb-3 mb-lg-0 pt-lg-2">
             <nav aria-label="breadcrumb">
@@ -57,24 +84,28 @@
                   <div class="mb-3 pb-2">
 
                     <?= text_input([
-                      'name' => 'name',                      
+                      'name' => 'name',
                     ]) ?>
                     <div class="row mt-4">
-                      <div class="col-12">
-                          <div class="form-group">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                              <?= select_input([
+                                'name' => 'parent_id',
+                                'label' => 'Parent category',
+                              ], $categories) ?>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                               <label for="photo">Category image</label>
-                              <input
-                                  class="form-control"
-                                  
-                                  name="photo"
-                                  type="file"
-                                  accept=".jpg,.jpeg,.png">
-                          </div>
-                      </div>
+                              <input class="form-control" name="photo" type="file" accept=".jpg,.jpeg,
+                            </div>
+                        </div>
                     </div>
                     
+
+
                   </div>
-                  
                   <button class="btn btn-primary d-block w-100" type="submit"><i class="ci-cloud-upload fs-lg me-2"></i>Upload Product</button>
                 </form>
               </div>
