@@ -2,10 +2,9 @@
   require_once('files/functions.php');
   protected_area();
 
-  $rows = db_select('categories', ' parent_id = 0 ');
+  $rows = db_select('categories', ' parent_id >= 0 ');
   $categories = [];
 
-  $categories[0] = 'No parent';
   foreach ($rows as $val) {
       $categories[$val['id']] = $val['name'];
   }
@@ -14,20 +13,25 @@
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $_SESSION['form']['value'] = $_POST;
 
-   $imgs = upload_images($_FILES);
+    $imgs = upload_images($_FILES);
     $data['name'] = $_POST['name'];
-    $data['description'] = (int) ($_POST['description']);
-    $data['parent_id'] = $_POST['parent_id'];
-    $data['photo'] = json_encode($imgs);
+    $data['buying_price'] = (float)$_POST['buying_price'];
+    $data['selling_price'] = (float)$_POST['selling_price'];
+    $data['category_id'] = $_POST['categoy_id'];
+    $data['description'] = $_POST['description'];
+    $data['photos'] = json_encode($imgs);
+    $data['user_id'] = $_SESSION['user']['id'];
+
+    // category_id
     
 
-    if (db_insert('categories', $data)) {
-        alert('success', 'Created category successfully.');
-        header('Location: admin-categories.php');
+    if (db_insert('products', $data)) {
+        alert('success', 'Product created successfully.');
+        header('Location: admin-products.php');
         unset($_SESSION['form']);
     } else {
-        alert('danger', 'Failed to create category, please try again.');
-        header('Location: admin-categories-add.php');
+        alert('danger', 'Failed to create product, please try again.');
+        header('Location: admin-products-add.php');
     }
     die();
   }
@@ -49,7 +53,7 @@
             </nav>
           </div>
           <div class="order-lg-1 pe-lg-4 text-center text-lg-start">
-            <h1 class="h3 text-light mb-0">Product Categories</h1>
+            <h1 class="h3 text-light mb-0">Product add</h1>
           </div>
         </div>
       </div>
@@ -74,28 +78,52 @@
                     </select>
                   </div>
                 </div>
-                <form action="admin-categories-add.php" method="POST" enctype="multipart/form-data">
+                <form action="admin-products-add.php" method="POST" enctype="multipart/form-data">
                   <div class="mb-3 pb-2">
 
-                    <?= text_input([
-                      'name' => 'name',
-                    ]) ?>
-                    <div class="row mt-4">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <?= select_input([
-                            'name' => 'parent_id',
-                            'label' => 'Parent category',
-                          ], $categories) ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= text_input([
+                                'name' => 'Name',
+                            ]) ?>
                         </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="photo">Category image</label>
-                          <input class="form-control" name="photo" type="file" accept=".jpg,.jpeg,.png,.webp">
-                        </div>
-                      </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= select_input([
+                              'name' => 'category_id',
+                              'label' => 'Category',
+                            ], $categories) ?> 
+                        </div>
+                    </div>
+
+                    <div class="row">
+                       <div class="col-md-6 mt-2">
+                            <?= text_input([
+                                'name' => 'buying_price',
+                                'label' => 'Buying price',
+                            ]) ?>
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <?= text_input([
+                                'name' => 'selling_price',
+                                'label' => 'Selling price',
+                            ]) ?>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <?php for ($i = 1; $i <= 6; $i++): ?>
+                            <div class="col-md-6 mt-3">
+                                <div class="form-group">
+                                    <label for="photo_<?= $i ?>">Product photo <?= $i ?></label>
+                                    <input class="form-control" name="photo_<?= $i ?>" type="file" accept=".jpg,.jpeg,.png,.webp">
+                                </div>
+                            </div>
+                        <?php endfor; ?>
+                    </div>
+
+
                     <div class="row mt-4">
                       <div class="col-12">
                         <div class="form-group">

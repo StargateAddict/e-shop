@@ -44,10 +44,10 @@ function db_insert($table_name, $data) {
 
         $column_names .= $key;
 
-        if (gettype($value) == 'string') {
-            $column_values .= "'$value'";
-        } else {
+        if (is_numeric($value)) {
             $column_values .= $value;
+        } else {
+            $column_values .= "'$value'";
         }
     }
 
@@ -241,7 +241,7 @@ function text_input($data)
 
     return
         '<label class="form-label text-capitalize" for="'.$name.'">'.$label.'</label>' .
-        '<input name="'.$name.'" value="'.$value.'" class="form-control" type="text" id="'.$name.'" placeholder="'.$name.'" '.$attributes.'>' .
+        '<input name="'.$name.'" value="'.$value.'" class="form-control" type="text" id="'.$name.'" placeholder="'.$label.'" '.$attributes.'>' .
         $error_text;
 }
 
@@ -282,8 +282,7 @@ function select_input($data, $options)
 
     return
     '<label class="form-label text-capitalize" for="' . $name . '">' . $label . '</label>' .
-    '<select name="' . $name . '" class="form-control" id="' . $name . '" ' . $attributes . '>' .
-    '<option value=""></option>' .
+    '<select name="' . $name . '" class="form-control form-select" id="' . $name . '" ' . $attributes . '>' .
     $options_html .
     '</select>' .
     $error_text;
