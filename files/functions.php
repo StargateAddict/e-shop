@@ -9,15 +9,27 @@ echo "<h1>ORIGINAL: $filesize MBs</h1>";
 $filesize2 = filesize('uploads/2.jpg')/1000000;
 echo "<h1>ORIGINAL: $filesize2 MBs</h1>";*/
 
-
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+define('BASE_URL', 'http://localhost/e-shop');
 
-define('BASE_URL','http://localhost/e-shop');
+$conn = new mysqli('localhost', 'root', '', 'e-shop');
 
-$conn = new mysqli('localhost','root','','e-shop');
+function get_product($id)
+{
+    $sql = "SELECT * FROM products WHERE id = $id";
+    global $conn;
+    $data['pro'] = $conn->query($sql)->fetch_assoc();
+    $cat ['cat'] = null;
+    if($data['pro'] != null){
+        $cat_id = $data['pro']['category_id']; //problem
+        $sql = "SELECT * FROM categories WHERE id = $cat_id"; 
+        $data['cat'] = $conn->query($sql)->fetch_assoc();
+    }    
+    return $data;
+}
 
 function get_product_thumb($json)
 {
@@ -36,8 +48,6 @@ function get_product_thumb($json)
         return $img;
     }
     return $objects[0]->thumb;
-
-    
 }
 
 function db_select($table, $condition = null)
@@ -55,7 +65,8 @@ function db_select($table, $condition = null)
     return $rows;
 }
 
-function db_insert($table_name, $data) {
+function db_insert($table_name, $data)
+{
     $sql = "INSERT INTO $table_name";
 
     $column_names = "(";
@@ -90,12 +101,12 @@ function db_insert($table_name, $data) {
     } else {
         return false;
     }
-    
 }
+
 use stefangabos\Zebra_Image\Zebra_Image;
 
 
-function create_thumb() 
+function create_thumb()
 {
     $source = "uploads/1.jpg";
     $target = "uploads/2.jpg";
@@ -108,9 +119,9 @@ function create_thumb()
     $image->source_path = $source;
     $image->target_path = $target;
     $image->preserve_aspect_ratio = true;
-    $image->enlarge_smaller_images = true;      
-    $image->preserve_time = true;    
-    $image->sharpen_images = true; 
+    $image->enlarge_smaller_images = true;
+    $image->preserve_time = true;
+    $image->sharpen_images = true;
 
     //$image->jpeg_quality = get_jpeg_quality(filesize($image->source_path));
     $image->jpeg_quality = 90;
@@ -128,12 +139,11 @@ function create_thumb()
         die("SUCCESS");
         return $image->target_path;
     }
-   
-    die("DONE");   
 
+    die("DONE");
 }
 
-    
+
 function get_jpeg_quality($_size)
 {
     $size = ($_size / 1000000);
@@ -158,40 +168,37 @@ function get_jpeg_quality($_size)
     return $qt;
 }
 
-function upload_images($files) {
+function upload_images($files)
+{
     ini_set('memory_limit', '512M');
     if ($files == null || empty($files)) {
         return [];
     }
     $uploaded_images = array();
 
-    foreach($files as $file){
+    foreach ($files as $file) {
         if (
             isset($file['name']) &&
             isset($file['type']) &&
             isset($file['tmp_name']) &&
             isset($file['error']) &&
             isset($file['size'])
-        ){
+        ) {
             $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-            $file_name = time() . "-" . rand(1000,10000) . "." . $ext;
+            $file_name = time() . "-" . rand(1000, 10000) . "." . $ext;
             $destination = 'uploads/' . $file_name;
             $thumb_destination = 'uploads/thumb_' . $file_name;
 
             $res = move_uploaded_file($file['tmp_name'], $destination);
-            if(!$res){
+            if (!$res) {
                 continue;
             }
 
             create_thumb($destination, $thumb_destination);
-            $img['src']=$destination;
-            $img['thumb']=$thumb_destination;
-            $uploaded_images[]=$img;
-
-            
+            $img['src'] = $destination;
+            $img['thumb'] = $thumb_destination;
+            $uploaded_images[] = $img;
         }
-
-        
     }
 
     return $uploaded_images;
@@ -199,19 +206,21 @@ function upload_images($files) {
 
 function url($path = "/")
 {
-    return BASE_URL.$path;
+    return BASE_URL . $path;
 }
 
-function protected_area(){
-    if(!isset($_SESSION['user'])){
-        alert('warning','Unauthorized access, login before you proceed.');
+function protected_area()
+{
+    if (!isset($_SESSION['user'])) {
+        alert('warning', 'Unauthorized access, login before you proceed.');
         header('Location: login.php');
         die();
     }
 }
 
-function logout(){
-    if(isset($_SESSION['user'])){
+function logout()
+{
+    if (isset($_SESSION['user'])) {
         unset($_SESSION['user']);
     }
     alert('success', 'Logout successfully.');
@@ -219,33 +228,36 @@ function logout(){
     die();
 }
 
-function is_logged_in(){
-    if(isset($_SESSION['user'])){
+function is_logged_in()
+{
+    if (isset($_SESSION['user'])) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
 
-function alert($type, $message){
+function alert($type, $message)
+{
     $_SESSION['alert']['type'] = $type;
     $_SESSION['alert']['message'] = $message;
 }
 
 
-function login_user($email,$password){
-    
+function login_user($email, $password)
+{
+
     global $conn;
     $sql = "SELECT * FROM users WHERE email = '{$email}'";
     $res = $conn->query($sql);
 
-    if($res->num_rows < 1){
+    if ($res->num_rows < 1) {
         return false;
     }
 
     $row = $res->fetch_assoc();
 
-    if(!password_verify($password,$row['password'])){
+    if (!password_verify($password, $row['password'])) {
         return false;
     }
 
@@ -262,21 +274,21 @@ function text_input($data)
     $value = "";
     $error = "";
     $error_text = "";
-    if(isset($_SESSION['form'])){
-        if(isset($_SESSION['form']['value'])){
+    if (isset($_SESSION['form'])) {
+        if (isset($_SESSION['form']['value'])) {
             if (isset($_SESSION['form']['value'][$name])) {
                 $value = $_SESSION['form']['value'][$name];
             }
         }
     }
 
-    
 
-    if(isset($_SESSION['form'])){
-        if(isset($_SESSION['form']['error'])){
-            if(isset($_SESSION['form']['error'][$name])){
+
+    if (isset($_SESSION['form'])) {
+        if (isset($_SESSION['form']['error'])) {
+            if (isset($_SESSION['form']['error'][$name])) {
                 $error = $_SESSION['form']['error'][$name];
-                $error_text = '<div class="form-text text-danger">'.$error.'</div>';
+                $error_text = '<div class="form-text text-danger">' . $error . '</div>';
             }
         }
     }
@@ -288,8 +300,8 @@ function text_input($data)
 
 
     return
-        '<label class="form-label text-capitalize" for="'.$name.'">'.$label.'</label>' .
-        '<input name="'.$name.'" value="'.$value.'" class="form-control" type="text" id="'.$name.'" placeholder="'.$label.'" '.$attributes.'>' .
+        '<label class="form-label text-capitalize" for="' . $name . '">' . $label . '</label>' .
+        '<input name="' . $name . '" value="' . $value . '" class="form-control" type="text" id="' . $name . '" placeholder="' . $label . '" ' . $attributes . '>' .
         $error_text;
 }
 
@@ -329,9 +341,58 @@ function select_input($data, $options)
     }
 
     return
-    '<label class="form-label text-capitalize" for="' . $name . '">' . $label . '</label>' .
-    '<select name="' . $name . '" class="form-control form-select" id="' . $name . '" ' . $attributes . '>' .
-    $options_html .
-    '</select>' .
-    $error_text;
+        '<label class="form-label text-capitalize" for="' . $name . '">' . $label . '</label>' .
+        '<select name="' . $name . '" class="form-control form-select" id="' . $name . '" ' . $attributes . '>' .
+        $options_html .
+        '</select>' .
+        $error_text;
+}
+
+
+function product_item_ui_1($pro)
+{
+    $thumb = $pic = get_product_thumb($pro['photos']);
+    $str = <<<EOF
+
+    <div class="col-md-4 col-sm-6 px-2 mb-4">
+        <div class="card product-card">
+        <button class="btn-wishlist btn-sm" type="button" data-bs-toggle="tooltip" data-bs-placement="left" title="Add to wishlist"><i class="ci-heart"></i></button><a class="card-img-top d-block overflow-hidden" href="product.php?id={$pro['id']}">
+                <img src="{$thumb} " alt="Product">
+            </a>
+            <div class="card-body py-2"><a class="product-meta d-block fs-xs pb-1" href="javascript:;">Sneakers &amp; Keds</a>
+                <h3 class="product-title fs-sm"><a href="product.php?id={$pro['id']}"> {$pro['name']}</a></h3>
+                <div class="d-flex justify-content-between">
+                    <div class="product-price"><span class="text-accent">$ {$pro['selling_price']}</span></div>
+                    <div class="star-rating"><i class="star-rating-icon ci-star-filled active"></i><i class="star-rating-icon ci-star-filled active"></i><i class="star-rating-icon ci-star-filled active"></i><i class="star-rating-icon ci-star-filled active"></i><i class="star-rating-icon ci-star"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body card-body-hidden">
+                <div class="text-center pb-2">
+                    <div class="form-check form-option form-check-inline mb-2">
+                        <input class="form-check-input" type="radio" name="size1" id="s-75">
+                        <label class="form-option-label" for="s-75">7.5</label>
+                    </div>
+                    <div class="form-check form-option form-check-inline mb-2">
+                        <input class="form-check-input" type="radio" name="size1" id="s-80" checked>
+                        <label class="form-option-label" for="s-80">8</label>
+                    </div>
+                    <div class="form-check form-option form-check-inline mb-2">
+                        <input class="form-check-input" type="radio" name="size1" id="s-85">
+                        <label class="form-option-label" for="s-85">8.5</label>
+                    </div>
+                        <div class="form-check form-option form-check-inline mb-2">
+                            <input class="form-check-input" type="radio" name="size1" id="s-90">
+                            <label class="form-option-label" for="s-90">9</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm d-block w-100 mb-2" type="button"><i class="ci-cart fs-sm me-1"></i>Add to Cart</button>
+                    <div class="text-center"><a class="nav-link-style fs-ms" href="#quick-view" data-bs-toggle="modal"><i class="ci-eye align-middle me-1"></i>Quick view</a></div>
+                </div>
+            </div>
+        <hr class="d-sm-none">
+     </div>
+    
+    EOF;
+    return $str;
 }
