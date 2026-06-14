@@ -2,7 +2,7 @@
   require_once('files/functions.php');
   protected_area();
 
-  $rows = db_select('categories', ' parent_id >= 0 ');
+  $rows = db_select('categories', ' parent_id != 0 ');
   $categories = [];
 
   foreach ($rows as $val) {
@@ -22,9 +22,7 @@
     $data['photos'] = json_encode($imgs);
     $data['user_id'] = $_SESSION['user']['id'];
 
-    // category_id
     
-
     if (db_insert('products', $data)) {
         alert('success', 'Product created successfully.');
         header('Location: admin-products.php');

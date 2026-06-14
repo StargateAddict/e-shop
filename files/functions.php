@@ -1,6 +1,14 @@
+<!--<img width="40%" src="uploads/1.jpg" alt="">
+<img width="40%" src="uploads/2.jpg" alt=""> -->
 <?php
 
+
 require_once 'Zebra_Image.php';
+/*$filesize = filesize('uploads/1.jpg')/1000000;
+echo "<h1>ORIGINAL: $filesize MBs</h1>";
+$filesize2 = filesize('uploads/2.jpg')/1000000;
+echo "<h1>ORIGINAL: $filesize2 MBs</h1>";*/
+
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -10,6 +18,27 @@ if (session_status() == PHP_SESSION_NONE) {
 define('BASE_URL','http://localhost/e-shop');
 
 $conn = new mysqli('localhost','root','','e-shop');
+
+function get_product_thumb($json)
+{
+    $img = "assets/no_image.jpg";
+    if ($json == null) {
+        return $img;
+    }
+    if (strlen($json) < 4) {
+        return $img;
+    }
+    $objects = json_decode($json);
+    if (empty($objects)) {
+        return $img;
+    }
+    if (!isset($objects[0]->thumb)) {
+        return $img;
+    }
+    return $objects[0]->thumb;
+
+    
+}
 
 function db_select($table, $condition = null)
 {
@@ -65,27 +94,46 @@ function db_insert($table_name, $data) {
 }
 use stefangabos\Zebra_Image\Zebra_Image;
 
-function create_thumb($source, $target) {
-    $image = new Zebra_Image();
-    $image->auto_handle_exif_orientation = true;
-    $image->preserve_aspect_ratio = true;
-    $image->enlarge_smaller_images = true;
-    $image->preserve_time = true;
 
+function create_thumb() 
+{
+    $source = "uploads/1.jpg";
+    $target = "uploads/2.jpg";
+
+    $image = new Zebra_Image();
+
+    ini_set('memory_limit', '-1');
+
+    $image->auto_handle_exif_orientation = true;
     $image->source_path = $source;
     $image->target_path = $target;
+    $image->preserve_aspect_ratio = true;
+    $image->enlarge_smaller_images = true;      
+    $image->preserve_time = true;    
+    $image->sharpen_images = true; 
 
-    $image->jpeg_quality = get_jpeg_quality(filesize($image->source_path));
+    //$image->jpeg_quality = get_jpeg_quality(filesize($image->source_path));
+    $image->jpeg_quality = 90;
+    $width = 500;
+    $height = 500;
 
-    $width = 1000;
-    $height = 1000;
     if (!$image->resize($width, $height, ZEBRA_IMAGE_CROP_CENTER)) {
+        die("failed - error code: " . $image->error);
         return $image->source_path;
     } else {
+        die("Modified: " . date("Y-m-d H:i:s", filemtime($target)));
+        $orig_dims = getimagesize($source);
+        $new_dims = getimagesize($target);
+        die("Original: " . $orig_dims[0] . "x" . $orig_dims[1] . " | Resized: " . $new_dims[0] . "x" . $new_dims[1]);
+        die("SUCCESS");
         return $image->target_path;
     }
+   
+    die("DONE");   
+
 }
 
+    
 function get_jpeg_quality($_size)
 {
     $size = ($_size / 1000000);

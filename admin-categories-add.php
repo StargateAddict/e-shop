@@ -1,23 +1,31 @@
 <?php 
   require_once('files/functions.php');
+  create_thumb();
+  die("=======");
+
   protected_area();
 
-  $rows = db_select('categories', ' parent_id = 0 ');
-  $categories = [];
+  //$rows = db_select('categories', ' parent_id = 0 ');
+  //$categories = [];
 
-  $categories[0] = 'No parent';
-  foreach ($rows as $val) {
-      $categories[$val['id']] = $val['name'];
-  }
+  //$categories[0] = 'No parent';
+  //foreach ($rows as $val) {
+      //$categories[$val['id']] = $val['name'];
+  //}
   
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $_SESSION['form']['value'] = $_POST;
+    
+    $imgs = upload_images($_FILES);
+    echo "<pre>";
+    print_r($imgs);
+    die();
 
-   $imgs = upload_images($_FILES);
+    $imgs = upload_images($_FILES);
     $data['name'] = $_POST['name'];
-    $data['description'] = (int) ($_POST['description']);
-    $data['parent_id'] = $_POST['parent_id'];
+    $data['description'] = $_POST['description'];
+    $data['parent_id'] = (int) ($_POST['parent_id']);
     $data['photo'] = json_encode($imgs);
     
 
