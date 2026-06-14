@@ -569,7 +569,8 @@
             </div>
             </div>
         </header>
-
+<script src="vendor/lightgallery/lightgallery.min.js"></script>
+<script src="vendor/lightgallery/plugins/video/lg-video.min.js"></script>
 
         <?php
             if(isset($_SESSION['alert'])){

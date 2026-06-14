@@ -615,6 +615,9 @@ $products = db_select('products', ' 1 ORDER BY id DESC');
 </div> 
 
 
+
+<script src="vendor/nouislider/dist/nouislider.min.js"></script>
+
 <?php
 require_once('files/footer.php');
 ?>

@@ -159,6 +159,8 @@
         <script src="vendor/drift-zoom/dist/Drift.min.js"></script>
         <!-- Main theme script-->
         <script src="js/theme.min.js"></script>
+        <script src="vendor/lightgallery/lightgallery.min.js"></script>
+        <script src="vendor/lightgallery/plugins/video/lg-video.min.js"></script>
     </body>
 
 <!-- Mirrored from cartzilla.createx.studio/home-fashion-store-v1.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 09 Oct 2023 15:48:45 GMT -->

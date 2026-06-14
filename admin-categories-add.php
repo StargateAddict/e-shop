@@ -1,7 +1,7 @@
 <?php 
   require_once('files/functions.php');
-  create_thumb();
-  die("=======");
+  //create_thumb();
+  //die("=======");
 
   protected_area();
 
