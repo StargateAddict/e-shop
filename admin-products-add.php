@@ -17,7 +17,7 @@
     $data['name'] = $_POST['name'];
     $data['buying_price'] = (float)$_POST['buying_price'];
     $data['selling_price'] = (float)$_POST['selling_price'];
-    $data['category_id'] = $_POST['categoy_id'];
+    $data['category_id'] = $_POST['category_id'];
     $data['description'] = $_POST['description'];
     $data['photos'] = json_encode($imgs);
     $data['user_id'] = $_SESSION['user']['id'];

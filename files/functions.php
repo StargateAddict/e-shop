@@ -44,10 +44,43 @@ function get_product_thumb($json)
     if (empty($objects)) {
         return $img;
     }
+
+    // Ak je to jeden objekt (nie array), zabaľ ho do array
+    if (!is_array($objects)) {
+        $objects = [$objects];
+    }
+
     if (!isset($objects[0]->thumb)) {
         return $img;
     }
     return $objects[0]->thumb;
+}
+
+function get_product_photos($json)
+{
+    $default = (object)[
+        'src' => 'assets/no_image.jpg',
+        'thumb' => 'assets/no_image.jpg'
+    ];
+    $photos = [$default];
+
+    if ($json == null) {
+        return $photos;
+    }
+    if (strlen($json) < 4) {
+        return $photos;
+    }
+    $objects = json_decode($json);
+
+    if (empty($objects)) {
+        return $photos;
+    }
+
+    if (!is_array($objects)) {
+        $objects = [$objects];
+    }
+
+    return $objects;
 }
 
 function db_select($table, $condition = null)
@@ -106,11 +139,8 @@ function db_insert($table_name, $data)
 use stefangabos\Zebra_Image\Zebra_Image;
 
 
-function create_thumb()
+function create_thumb($source, $target)
 {
-    $source = "uploads/1.jpg";
-    $target = "uploads/2.jpg";
-
     $image = new Zebra_Image();
 
     ini_set('memory_limit', '-1');
@@ -122,27 +152,17 @@ function create_thumb()
     $image->enlarge_smaller_images = true;
     $image->preserve_time = true;
     $image->sharpen_images = true;
-
-    //$image->jpeg_quality = get_jpeg_quality(filesize($image->source_path));
     $image->jpeg_quality = 90;
+
     $width = 500;
     $height = 500;
 
     if (!$image->resize($width, $height, ZEBRA_IMAGE_CROP_CENTER)) {
-        die("failed - error code: " . $image->error);
-        return $image->source_path;
-    } else {
-        die("Modified: " . date("Y-m-d H:i:s", filemtime($target)));
-        $orig_dims = getimagesize($source);
-        $new_dims = getimagesize($target);
-        die("Original: " . $orig_dims[0] . "x" . $orig_dims[1] . " | Resized: " . $new_dims[0] . "x" . $new_dims[1]);
-        die("SUCCESS");
-        return $image->target_path;
+        return false;
     }
 
-    die("DONE");
+    return true;
 }
-
 
 function get_jpeg_quality($_size)
 {

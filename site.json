@@ -1,0 +1,8 @@
+{
+    "name": "E-Shop",
+    "short_name": "E-Shop",
+    "icons": [],
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
+    "display": "standalone"
+}
