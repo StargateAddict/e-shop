@@ -285,11 +285,11 @@ require_once('files/functions.php');
                                     </div>
                                     </a>
                                     <div class="navbar-tool dropdown ms-3">
-                                        <a class="navbar-tool-icon-box bg-secondary dropdown-toggle" href="shop-cart.php">
+                                        <a class="navbar-tool-icon-box bg-secondary dropdown-toggle" href="#">
                                             <span class="navbar-tool-label">0</span>
                                             <i class="navbar-tool-icon ci-cart"></i>
                                         </a>
-                                        <a class="navbar-tool-text" href="shop-cart.php">
+                                        <a class="navbar-tool-text" href="#">
                                             <small>My Cart</small>$0.00
                                         </a>
 
