@@ -3,12 +3,7 @@
   protected_area(); 
   
   $categories = db_select('categories', ' 1 ORDER BY id DESC');
- /*
-  echo "<pre>";
-  print_r($categories);
-  die();
- */
-
+ 
   require_once('files/header.php');
 ?>
 
@@ -17,7 +12,7 @@
           <div class="order-lg-2 mb-3 mb-lg-0 pt-lg-2">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb breadcrumb-light flex-lg-nowrap justify-content-center justify-content-lg-start">
-                <li class="breadcrumb-item"><a class="text-nowrap" href="index-2.html"><i class="ci-home"></i>Home</a></li>
+                <li class="breadcrumb-item"><a class="text-nowrap" href="<?= BASE_URL ?>"><i class="ci-home"></i>Home</a></li>
                 <li class="breadcrumb-item text-nowrap"><a href="#">Account</a>
                 </li>
                 <li class="breadcrumb-item text-nowrap active" aria-current="page">Orders history</li>

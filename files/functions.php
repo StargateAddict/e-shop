@@ -1,13 +1,8 @@
-<!--<img width="40%" src="uploads/1.jpg" alt="">
-<img width="40%" src="uploads/2.jpg" alt=""> -->
 <?php
 
 
 require_once 'Zebra_Image.php';
-/*$filesize = filesize('uploads/1.jpg')/1000000;
-echo "<h1>ORIGINAL: $filesize MBs</h1>";
-$filesize2 = filesize('uploads/2.jpg')/1000000;
-echo "<h1>ORIGINAL: $filesize2 MBs</h1>";*/
+
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -24,7 +19,7 @@ function get_product($id)
     $data['pro'] = $conn->query($sql)->fetch_assoc();
     $cat ['cat'] = null;
     if($data['pro'] != null){
-        $cat_id = $data['pro']['category_id']; //problem
+        $cat_id = $data['pro']['category_id']; 
         $sql = "SELECT * FROM categories WHERE id = $cat_id"; 
         $data['cat'] = $conn->query($sql)->fetch_assoc();
     }    
@@ -44,8 +39,7 @@ function get_product_thumb($json)
     if (empty($objects)) {
         return $img;
     }
-
-    // Ak je to jeden objekt (nie array), zabaľ ho do array
+     
     if (!is_array($objects)) {
         $objects = [$objects];
     }
