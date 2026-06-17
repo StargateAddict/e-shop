@@ -25,15 +25,7 @@ if ($cat == null) {
     die("Category not found");
 }
 
-$images = get_product_photos($pro['photos']); //problem
-//var_dump($pro['photos']);
-//var_dump($images);
-//die();
-/* 
-[src] => uploads/1781381832-8039.webp
-[thumb] => uploads/thumb_1781381832-8039.webp
-*/
-
+$images = get_product_photos($pro['photos']);
 ?>
 
 <div class="page-title-overlap bg-dark pt-4">
