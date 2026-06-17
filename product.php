@@ -92,56 +92,37 @@ $images = get_product_photos($pro['photos']); //problem
                     </div>
                 </div>
                 <!-- Product details-->
-                <div class="col-lg-5 pt-4 pt-lg-0">
-                    <div class="product-details ms-auto pb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2"><a href="#reviews" data-scroll>
-                                <div class="star-rating"><i class="star-rating-icon ci-star-filled active"></i><i class="star-rating-icon ci-star-filled active"></i><i class="star-rating-icon ci-star-filled active"></i><i class="star-rating-icon ci-star-filled active"></i><i class="star-rating-icon ci-star"></i>
-                                </div><span class="d-inline-block fs-sm text-body align-middle mt-1 ms-1">74 Reviews</span>
-                            </a>
-                            <button class="btn-wishlist me-0 me-lg-n3" type="button" data-bs-toggle="tooltip" title="Add to wishlist"><i class="ci-heart"></i></button>
-                        </div>
-                        <div class="mb-3"><span class="h3 fw-normal text-accent me-1">$18.<small>99</small></span>
-                            <del class="text-muted fs-lg me-3">$25.<small>00</small></del><span class="badge bg-danger badge-shadow align-middle mt-n2">Sale</span>
-                        </div>
-                        <div class="fs-sm mb-4"><span class="text-heading fw-medium me-1">Color:</span><span class="text-muted" id="colorOption">Red/Dark blue/White</span></div>
-                        <div class="position-relative me-n4 mb-3">
-                            <div class="form-check form-option form-check-inline mb-2">
-                                <input class="form-check-input" type="radio" name="color" id="color1" data-bs-label="colorOption" value="Red/Dark blue/White" checked>
-                                <label class="form-option-label rounded-circle" for="color1"><span class="form-option-color rounded-circle" style="background-image: url(img/shop/single/color-opt-1.png)"></span></label>
-                            </div>
-                            <div class="form-check form-option form-check-inline mb-2">
-                                <input class="form-check-input" type="radio" name="color" id="color2" data-bs-label="colorOption" value="Beige/White/Dark grey">
-                                <label class="form-option-label rounded-circle" for="color2"><span class="form-option-color rounded-circle" style="background-image: url(img/shop/single/color-opt-2.png)"></span></label>
-                            </div>
-                            <div class="form-check form-option form-check-inline mb-2">
-                                <input class="form-check-input" type="radio" name="color" id="color3" data-bs-label="colorOption" value="Dark grey/White/Orange">
-                                <label class="form-option-label rounded-circle" for="color3"><span class="form-option-color rounded-circle" style="background-image: url(img/shop/single/color-opt-3.png)"></span></label>
-                            </div>
-                            <div class="product-badge product-available mt-n1"><i class="ci-security-check"></i>Product available</div>
-                        </div>
-                        <form class="mb-grid-gutter" method="post">
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between align-items-center pb-1">
-                                    <label class="form-label" for="product-size">Size:</label><a class="nav-link-style fs-sm" href="#size-chart" data-bs-toggle="modal"><i class="ci-ruler lead align-middle me-1 mt-n1"></i>Size guide</a>
-                                </div>
-                                <select class="form-select" required id="product-size">
-                                    <option value="">Select size</option>
-                                    <option value="xs">XS</option>
-                                    <option value="s">S</option>
-                                    <option value="m">M</option>
-                                    <option value="l">L</option>
-                                    <option value="xl">XL</option>
-                                </select>
-                            </div>
-                            <div class="mb-3 d-flex align-items-center">
-                                <select class="form-select me-3" style="width: 5rem;">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
-                                <button class="btn btn-primary btn-shadow d-block w-100" type="submit"><i class="ci-cart fs-lg me-2"></i>Add to Cart</button>
+                <form class="mb-grid-gutter" method="post" action="cart-logic.php?action=add">
+    <input type="hidden" name="product_id" value="<?= $pro['id'] ?>">
+    <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center pb-1">
+            <label class="form-label" for="product-size">Size:</label>
+            <a class="nav-link-style fs-sm" href="#size-chart" data-bs-toggle="modal">
+                <i class="ci-ruler lead align-middle me-1 mt-n1"></i>Size guide
+            </a>
+        </div>
+        <select class="form-select" required id="product-size" name="size">
+            <option value="">Select size</option>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+        </select>
+    </div>
+    <div class="mb-3 d-flex align-items-center">
+        <select class="form-select me-3" name="quantity" style="width: 5rem;">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <button class="btn btn-primary btn-shadow d-block w-100" type="submit">
+            <i class="ci-cart fs-lg me-2"></i>Add to Cart
+        </button>
+    </div>
+</form>
                             </div>
                         </form>
                         <!-- Product panels-->

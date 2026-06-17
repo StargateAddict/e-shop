@@ -163,7 +163,80 @@ function create_thumb($source, $target)
 
     return true;
 }
+function cart_add($user_id, $product_id, $quantity = 1, $size = null, $color = null)
+{
+    global $conn;
+    $size_val = $size ? "'$size'" : "NULL";
+    $color_val = $color ? "'$color'" : "NULL";
+    
+    $sql = "INSERT INTO cart (user_id, product_id, quantity, size, color)
+            VALUES ($user_id, $product_id, $quantity, $size_val, $color_val)
+            ON DUPLICATE KEY UPDATE quantity = quantity + $quantity";
+    
+    return $conn->query($sql);
+}
 
+function cart_get($user_id)
+{
+    global $conn;
+    $sql = "SELECT cart.*, products.name, products.selling_price, 
+                   products.discount, products.photos
+            FROM cart 
+            JOIN products ON cart.product_id = products.id
+            WHERE cart.user_id = $user_id";
+    $res = $conn->query($sql);
+    $rows = [];
+    while ($row = $res->fetch_assoc()) {
+        $rows[] = $row;
+    }
+    return $rows;
+}
+
+function cart_update($cart_id, $user_id, $quantity)
+{
+    global $conn;
+    if ($quantity < 1) {
+        return cart_remove($cart_id, $user_id);
+    }
+    $sql = "UPDATE cart SET quantity = $quantity 
+            WHERE id = $cart_id AND user_id = $user_id";
+    return $conn->query($sql);
+}
+
+function cart_remove($cart_id, $user_id)
+{
+    global $conn;
+    $sql = "DELETE FROM cart WHERE id = $cart_id AND user_id = $user_id";
+    return $conn->query($sql);
+}
+
+function cart_clear($user_id)
+{
+    global $conn;
+    $sql = "DELETE FROM cart WHERE user_id = $user_id";
+    return $conn->query($sql);
+}
+
+function cart_count($user_id)
+{
+    global $conn;
+    $sql = "SELECT SUM(quantity) as total FROM cart WHERE user_id = $user_id";
+    $res = $conn->query($sql);
+    $row = $res->fetch_assoc();
+    return $row['total'] ?? 0;
+}
+
+function cart_total($user_id)
+{
+    global $conn;
+    $sql = "SELECT SUM(products.selling_price * cart.quantity) as total
+            FROM cart 
+            JOIN products ON cart.product_id = products.id
+            WHERE cart.user_id = $user_id";
+    $res = $conn->query($sql);
+    $row = $res->fetch_assoc();
+    return $row['total'] ?? 0;
+}
 function get_jpeg_quality($_size)
 {
     $size = ($_size / 1000000);
