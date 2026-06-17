@@ -82,13 +82,7 @@ $images = get_product_photos($pro['photos']); //problem
                                     <img src="<?= $img->src ?>" alt="Product thumb">
                                 </a>
                             <?php $active_class = "";
-                            } ?>
-
-
-
-                            <a class="product-gallery-thumblist-item video-item" href="https://www.youtube.com/watch?v=1vrXpMLLK14">
-                                <div class="product-gallery-thumblist-item-text"><i class="ci-video"></i>Video</div>
-                            </a>
+                            } ?>                            
                         </div>
                     </div>
                 </div>
